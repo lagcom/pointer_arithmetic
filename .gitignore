@@ -38,3 +38,7 @@
 # Debugger settings
 
 launch.json
+
+# Makefile generated .c file
+
+*.c
