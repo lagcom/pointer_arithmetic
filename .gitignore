@@ -30,3 +30,11 @@
 *.exe
 *.out
 *.app
+
+# WSL nonsense
+
+*.Identifier
+
+# Debugger settings
+
+launch.json
