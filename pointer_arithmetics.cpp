@@ -2,15 +2,24 @@
 #include<string.h>
 #include<stdlib.h>
 
+void makeFormat(char*format,unsigned long sizeOfVariable,int includeSpace){
+    sprintf(format,"%%0%lu",sizeOfVariable*2);
+    strcat(format,"llx");
+    if(includeSpace) strcat(format," ");
+}
+
 int main(int argc, char*argv[]){
-    char hexFormat[][9]={"%02x ","%04x ","%08x ","%016lx ","%016llx ","%016llx"};
-    char decimalFormat[][9]={"%d ","%d ","%d ","%ld ","%lld ","%016llx"};
+    char hexFormat[6][9];
+    char decimalFormat[6][9]={"%d ","%d ","%d ","%ld ","%lld "};
     char (*format)[9]=hexFormat;
+
     char str[100000]="This is a c-string of length 31";
     int intArray[100000]={1,2,3,4,5,6,7,8}, intArraySize = 8;
     double doubleArray[100000]={1.1,2.2,3.3,4.4}, doubleArraySize = 4;
     int length = strlen(str)+1;
     void *start = str;
+    
+    /* this massive switch-case statement is just input handling */
     switch(argc){
         case 0:
             printf("what did you even do to call this program with no arguments :skull:\n");
@@ -18,45 +27,20 @@ int main(int argc, char*argv[]){
         case 1:
             printf("proper usage: %s FORMAT [TYPE] [DATA]\n",*argv);
             printf("FORMAT: d for decimal, h or x for hexadecimal\n");
-            printf("TYPE: datatype to use for the original array, c for char, i for int, f for double");
-            printf("DATA: everything after the TYPE gets treated as DATA. Must be valid integers if TYPE is i");
+            printf("TYPE: datatype to use for the original array, c for char, i for int, f for double\n");
+            printf("DATA: everything after the TYPE gets treated as DATA. Must be valid integers if TYPE is i\n");
             return 1;
 
         default:
             if(*argv[1]=='d') format = decimalFormat;
             else {
-                char number[3]="2";
-
-                strcpy(format[0],"%0");
-                sprintf(number,"%lu",sizeof(char)*2);
-                strcat(format[0],number);
-                strcat(format[0],"x ");
-                
-                strcpy(format[1],"%0");
-                sprintf(number,"%lu",sizeof(short)*2);
-                strcat(format[1],number);
-                strcat(format[1],"x ");
-                
-                strcpy(format[2],"%0");
-                sprintf(number,"%lu",sizeof(int)*2);
-                strcat(format[2],number);
-                strcat(format[2],"x ");
-                
-                strcpy(format[3],"%0");
-                sprintf(number,"%lu",sizeof(long)*2);
-                strcat(format[3],number);
-                strcat(format[3],"lx ");
-                
-                strcpy(format[4],"%0");
-                sprintf(number,"%lu",sizeof(long long)*2);
-                strcat(format[4],number);
-                strcat(format[4],"llx ");
-
-                strcpy(format[5],"%0");
-                sprintf(number,"%lu",sizeof(long long)*2);
-                strcat(format[5],number);
-                strcat(format[5],"llx");
+                makeFormat(format[0],sizeof(char),1);
+                makeFormat(format[1],sizeof(short),1);
+                makeFormat(format[2],sizeof(int),1);
+                makeFormat(format[3],sizeof(long),1);
+                makeFormat(format[4],sizeof(long long),1);
             }
+            makeFormat(format[5],sizeof(long long),0);
 
             if(argc == 2) break;
 
@@ -106,7 +90,7 @@ int main(int argc, char*argv[]){
     void pointer to store a generic address without a data type
     this can be compared with other pointer types without casting
     */
-    const void*end = (void*)((unsigned long)start+length);
+    const void*end = (__int8_t*)start+length;
 
     printf("printing as a string\n%s\n",(char*)start);
 
