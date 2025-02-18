@@ -29,6 +29,9 @@ pointer_arithmetics_cpp03.exe: pointer_arithmetics.cpp
 pointer_arithmetics_cpp98.exe: pointer_arithmetics.cpp
 	$(CXX) --std=c++98 $(FLAGS) -g $^ -o $@
 
+pointer_arithmetics_x86_cpp98.exe: pointer_arithmetics.cpp
+	$(CXX) --std=c++98 $(FLAGS) -m32 $^ -o $@
+
 # Different C versions
 pointer_arithmetics_c23.exe: pointer_arithmetics.c
 	$(CC) --std=c23 $(FLAGS) $^ -o $@
@@ -47,6 +50,9 @@ pointer_arithmetics_c90.exe: pointer_arithmetics.c
   
 pointer_arithmetics_c89.exe: pointer_arithmetics.c
 	$(CC) --std=c89 $(FLAGS) $^ -o $@
+  
+pointer_arithmetics_x86_c89.exe: pointer_arithmetics.c
+	$(CC) --std=c89 $(FLAGS) -m32 $^ -o $@
 
 pointer_arithmetics.c: pointer_arithmetics.cpp
 	cp $^ $@

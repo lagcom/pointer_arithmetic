@@ -18,6 +18,17 @@ const char* strToCstr(char*str){
 
 using namespace std;
 
+#if __cplusplus < 201703L
+#include<sstream>
+#include<cstdlib>
+
+string to_string(long a){
+    ostringstream returnString;
+    returnString<<a;
+    return returnString.str();
+}
+#endif
+
 void makeFormat(string &format,unsigned long sizeOfVariable,bool includeSpace){
     format = "%0" + to_string(sizeOfVariable*2) + (includeSpace ? "llx " : "llx");
 }
