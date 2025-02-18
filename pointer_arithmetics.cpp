@@ -8,6 +8,7 @@ int main(int argc, char*argv[]){
     char (*format)[9];
     char str[100000]="This is a c-string of length 31";
     int intArray[100000]={1,2,3,4,5,6,7,8};
+    double doubleArray[100000]={1.1,2.2,3.3,4.4};
     int length = strlen(str)+1;
     char*start = str;
     switch(argc){
@@ -17,7 +18,7 @@ int main(int argc, char*argv[]){
         case 1:
             printf("proper usage: %s FORMAT [TYPE] [DATA]\n",*argv);
             printf("FORMAT: d for decimal, h or x for hexadecimal\n");
-            printf("TYPE: datatype to use for the original array, c for char, i for int");
+            printf("TYPE: datatype to use for the original array, c for char, i for int, f for double");
             printf("DATA: everything after the TYPE gets treated as DATA. Must be valid integers if TYPE is i");
             return 1;
 
@@ -28,6 +29,7 @@ int main(int argc, char*argv[]){
             if(argc == 2) break;
 
             if(*argv[2]=='i') start=(char*)intArray;
+            else if (*argv[2]=='f') start=(char*)doubleArray;
             
             if(argc == 3) break;
 
@@ -37,6 +39,13 @@ int main(int argc, char*argv[]){
                     intArray[i] = atoi(argv[i+3]);
                 }
                 length = (argc-3)*4;
+            }
+            else if(*argv[2]=='f'){
+                int i;
+                for(i=0 ; i+3<argc ; i++){
+                    doubleArray[i] = atof(argv[i+3]);
+                }
+                length = (argc-3)*8;
             }
             else{
                 int i;
