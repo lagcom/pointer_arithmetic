@@ -1,3 +1,4 @@
+#ifndef __cplusplus
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
@@ -8,16 +9,42 @@ void makeFormat(char*format,unsigned long sizeOfVariable,int includeSpace){
     if(includeSpace) strcat(format," ");
 }
 
+const char* strToCstr(char*str){
+    return str;
+}
+#else
+#include<cstdio>
+#include<string>
+
+using namespace std;
+
+void makeFormat(string &format,unsigned long sizeOfVariable,bool includeSpace){
+    format = "%0" + to_string(sizeOfVariable*2) + (includeSpace ? "llx " : "llx");
+}
+
+const char* strToCstr(string str){
+    return str.c_str();
+}
+#endif
+
 int main(int argc, char*argv[]){
+    #ifndef __cplusplus
     char hexFormat[6][9];
     char decimalFormat[6][9]={"%d ","%d ","%d ","%ld ","%lld "};
     char (*format)[9]=hexFormat;
-
     char str[100000]="This is a c-string of length 31";
-    int intArray[100000]={1,2,3,4,5,6,7,8}, intArraySize = 8;
-    double doubleArray[100000]={1.1,2.2,3.3,4.4}, doubleArraySize = 4;
     int length = strlen(str)+1;
     void *start = str;
+    #else
+    string hexFormat[6];
+    string decimalFormat[6]={"%d ","%d ","%d ","%ld ","%lld "};
+    string*format = hexFormat;
+    string str = "This is a cpp-string of length 33";
+    int length = str.length()+1;
+    const void *start = str.c_str();
+    #endif
+    int intArray[100000]={1,2,3,4,5,6,7,8}, intArraySize = 8;
+    double doubleArray[100000]={1.1,2.2,3.3,4.4}, doubleArraySize = 4;
     
     /* this massive switch-case statement is just input handling */
     switch(argc){
@@ -45,11 +72,11 @@ int main(int argc, char*argv[]){
             if(argc == 2) break;
 
             if(*argv[2]=='i') {
-                start=(char*)intArray;
+                start=intArray;
                 length=intArraySize*sizeof(int);
             }
             else if (*argv[2]=='f') {
-                start=(char*)doubleArray;
+                start=doubleArray;
                 length=doubleArraySize*sizeof(double);
             }
             else{
@@ -73,6 +100,7 @@ int main(int argc, char*argv[]){
                 length = (argc-3)*sizeof(double);
             }
             else{
+                #ifndef __cplusplus
                 int i;
                 strcpy(str,argv[3]);
                 for(i=4; i<argc ; i++){
@@ -82,6 +110,14 @@ int main(int argc, char*argv[]){
                     strcat(str,argv[i]);
                 }
                 length = strlen(str)+1;
+                #else
+                str=argv[3];
+                for(int i=4; i<argc ; i++){
+                    str = str + ' ' + argv[i];
+                }
+                start = str.c_str();
+                length = str.length()+1;
+                #endif
                 length *= sizeof(char);
             }
     }
@@ -109,31 +145,31 @@ int main(int argc, char*argv[]){
     char*cp;
     printf("printing as a char array, size %lu\n",sizeof(char));
     for(cp=(char*)start;cp<end;cp++)
-        printf(format[0],*cp);
+        printf(strToCstr(format[0]),*cp);
     printf("\n");
 
     printf("printing as a short array, size %lu\n",sizeof(short));
     short*sp;
     for(sp=(short*)start;sp<end;sp++)
-        printf(format[1],*sp);
+        printf(strToCstr(format[1]),*sp);
     printf("\n");
 
     int*ip;
     printf("printing as an int array, size %lu\n",sizeof(int));
     for(ip=(int*)start;ip<end;ip++)
-        printf(format[2],*ip);
+        printf(strToCstr(format[2]),*ip);
     printf("\n");
     
     long*lp;
     printf("printing as a long array, size %lu\n",sizeof(long));
     for(lp=(long*)start;lp<end;lp++)
-        printf(format[3],*lp);
+        printf(strToCstr(format[3]),*lp);
     printf("\n");
     
     long long *llp;
     printf("printing as a long long array, size %lu\n",sizeof(long long));
     for(llp=(long long *)start;llp<end;llp++)
-        printf(format[4],*llp);
+        printf(strToCstr(format[4]),*llp);
     printf("\n");
     
     #ifdef __SIZEOF_INT128__
@@ -142,7 +178,7 @@ int main(int argc, char*argv[]){
     for(_128p=(__int128_t*)start;_128p<end;_128p++){
         int i=(sizeof(__int128_t)/sizeof(long long));
         while(i--)
-            printf(format[5],*(((long long*)_128p)+i));
+            printf(strToCstr(format[5]),*(((long long*)_128p)+i));
         printf(" ");
     }
     printf("\n");
