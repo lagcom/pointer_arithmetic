@@ -4,7 +4,7 @@
 
 int main(int argc, char*argv[]){
     char hexFormat[][9]={"%02x ","%04x ","%08x ","%016lx ","%016llx ","%016llx"};
-    char decimalFormat[][9]={"%d ","%d ","%d ","%ld ","%lld "};
+    char decimalFormat[][9]={"%d ","%d ","%d ","%ld ","%lld ","%016llx"};
     char (*format)[9]=hexFormat;
     char str[100000]="This is a c-string of length 31";
     int intArray[100000]={1,2,3,4,5,6,7,8}, intArraySize = 8;
@@ -97,7 +97,7 @@ int main(int argc, char*argv[]){
                     str[curlen+1]=0;
                     strcat(str,argv[i]);
                 }
-                length = strlen(str);
+                length = strlen(str)+1;
                 length *= sizeof(char);
             }
     }
@@ -167,19 +167,19 @@ int main(int argc, char*argv[]){
     float*fp;
     printf("printing as a float array, size %lu\n",sizeof(float));
     for(fp=(float*)start;fp<end;fp++)
-        printf("%f ",*fp);
+        printf("%g ",*fp);
     printf("\n");
 
     double*dp;
     printf("printing as a double array, size %lu\n",sizeof(double));
     for(dp=(double*)start;dp<end;dp++)
-        printf("%lf ",*dp);
+        printf("%lg ",*dp);
     printf("\n");
     
     long double *ldp;
     printf("printing as a long double array, size %lu\n",sizeof(long double));
     for(ldp=(long double*)start;ldp<end;ldp++)
-        printf("%Lf ",*ldp);
+        printf("%Lg ",*ldp);
     printf("\n");
 
     return 0;
