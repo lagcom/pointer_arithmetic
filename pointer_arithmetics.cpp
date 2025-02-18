@@ -10,7 +10,7 @@ int main(int argc, char*argv[]){
     int intArray[100000]={1,2,3,4,5,6,7,8};
     double doubleArray[100000]={1.1,2.2,3.3,4.4};
     int length = strlen(str)+1;
-    char*start = str;
+    void *start = str;
     switch(argc){
         case 0:
             printf("what did you even do to call this program with no arguments :skull:\n");
@@ -82,7 +82,7 @@ int main(int argc, char*argv[]){
 
     char*cp;
     printf("printing as a char array, size %lu\n",sizeof(char));
-    for(cp=start;cp<end;cp++)
+    for(cp=(char*)start;cp<end;cp++)
         printf(format[0],*cp);
     printf("\n");
 
