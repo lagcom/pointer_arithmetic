@@ -1,4 +1,5 @@
 #ifndef __cplusplus
+/* C includes & stuff */
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
@@ -13,12 +14,14 @@ const char* strToCstr(char*str){
     return str;
 }
 #else
+//cpp stuff
 #include<cstdio>
 #include<string>
 
 using namespace std;
 
 #if __cplusplus < 201703L
+//apparently older versions of c++ don't have to_string
 #include<sstream>
 #include<cstdlib>
 
@@ -40,13 +43,15 @@ const char* strToCstr(string str){
 
 int main(int argc, char*argv[]){
     #ifndef __cplusplus
+    /* c declarations */
     char hexFormat[6][9];
     char decimalFormat[6][9]={"%d ","%d ","%d ","%ld ","%lld "};
     char (*format)[9]=hexFormat;
     char str[100000]="This is a c-string of length 31";
     int length = strlen(str)+1;
-    void *start = str;
+    const void *start = str;
     #else
+    //c++ declarations
     string hexFormat[6];
     string decimalFormat[6]={"%d ","%d ","%d ","%ld ","%lld "};
     string*format = hexFormat;
@@ -72,6 +77,8 @@ int main(int argc, char*argv[]){
         default:
             if(*argv[1]=='d') format = decimalFormat;
             else {
+                /* this is not hard-coded so that they can use different number of digits
+                based on the different sizes of the datatypes in different architectures. */
                 makeFormat(format[0],sizeof(char),1);
                 makeFormat(format[1],sizeof(short),1);
                 makeFormat(format[2],sizeof(int),1);
@@ -136,13 +143,14 @@ int main(int argc, char*argv[]){
     /*
     void pointer to store a generic address without a data type
     this can be compared with other pointer types without casting
+
+    cast to __int8_t* to use exactly 1-byte pointer instead of relying on void* arithmetic
     */
     const void*end = (__int8_t*)start+length;
 
     printf("printing as a string\n%s\n",(char*)start);
 
     #if (defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199409L)) || defined(__cplusplus)
-    
     /* bool doesn't exist in older versions, so this has to be skipped */
     printf("printing as a bool array, size %lu\n",sizeof(bool));
     bool*bp;
@@ -193,6 +201,8 @@ int main(int argc, char*argv[]){
         printf(" ");
     }
     printf("\n");
+    #else
+    printf("skipping 128-bit integer\n")
     #endif
     
     float*fp;
